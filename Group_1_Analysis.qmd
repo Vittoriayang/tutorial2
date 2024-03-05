@@ -1,0 +1,84 @@
+---
+title: "Group_1_Analysis"
+number-sections: true
+format:
+  html:
+    embed-resources: true
+    code-tools: true
+  pdf: default
+editor_options:
+  chunk_output_type: console
+execute:
+  echo: true
+  eval: true
+  warning: false
+  message: false
+---
+
+
+```{r}
+library(tidyverse)
+library(moderndive)
+library(gapminder)
+library(sjPlot)
+library(stats)
+library(jtools)
+library(dplyr)
+library(janitor)
+```
+
+```{r}
+data <- read.csv('dataset01.csv')
+data$Region <- as.factor(data$Region)
+data$Household.Head.Sex <- as.factor(data$Household.Head.Sex)
+data$Type.of.Household <- as.factor(data$Type.of.Household)
+data$Total.Number.of.Family.members <- as.factor(data$Total.Number.of.Family.members)
+levels(data$Total.Number.of.Family.members) <- c("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15")
+data$Number.of.bedrooms <- as.factor(data$Number.of.bedrooms)
+data$Electricity <- as.factor(data$Electricity)
+```
+
+# Analysis for each explanatory variable with response variable(Total.Number.of.Family.members)
+
+## Household.Head.Sex\~Total.Number.of.Family.members
+
+```{r}
+data %>%
+  tabyl(Household.Head.Sex, Total.Number.of.Family.members) %>%
+  adorn_percentages() %>%
+  adorn_pct_formatting() %>%
+  adorn_ns() # To show original counts
+```
+
+```{r}
+ggplot(data = data, aes(x = Total.Number.of.Family.members, group = Household.Head.Sex)) +
+  geom_bar(aes(y = after_stat(prop), fill = Household.Head.Sex), stat = "count", position = "dodge") +
+  labs(x = "Total.Number.of.Family.members", y = "Proportion")
+```
+
+There is a clear pattern that female has higher proportion in smaller family size than male.
+
+## Type.of.Household\~Total.Number.of.Family.members
+
+```{r}
+data %>%
+  tabyl(Type.of.Household, Total.Number.of.Family.members) %>%
+  adorn_percentages() %>%
+  adorn_pct_formatting() %>%
+  adorn_ns() # To show original counts
+```
+
+```{r}
+ggplot(data = data, aes(x = Total.Number.of.Family.members, group = Type.of.Household)) +
+  geom_bar(aes(y = after_stat(prop), fill = Type.of.Household), stat = "count", position = "dodge") +
+  labs(x = "Total.Number.of.Family.members", y = "Proportion")
+```
+
+## House.Floor.Area\~Total.Number.of.Family.members
+
+```{r}
+ggplot(data = data, aes(x = Total.Number.of.Family.members, y = House.Floor.Area, fill = Total.Number.of.Family.members)) +
+  geom_boxplot() +
+  labs(x = "Total.Number.of.Family.members", y = "House.Floor.Area") +
+  theme(legend.position = "none")
+```
